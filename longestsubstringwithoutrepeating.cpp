@@ -38,10 +38,11 @@ public:
 		}
 		else
 		{
+		
 			if(longestSub < i - start)
-                {
-                    longestSub = i - start;
-                }
+                	{
+                    		longestSub = i - start;
+                	}
                 
 			start = j + 1;
 		}
