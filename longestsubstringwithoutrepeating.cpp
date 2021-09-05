@@ -1,3 +1,9 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+
+using namespace std;
+
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) 
@@ -56,4 +62,10 @@ public:
                 
 	return longestSub;
     }
+};
+
+int main()
+{
+	int test = lengthOfLongestSubstring("abcabcbb");
+	return test;
 };
