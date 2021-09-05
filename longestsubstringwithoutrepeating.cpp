@@ -9,49 +9,50 @@ public:
         }
 
         // single case
-	    if (s.length() == 1)
+	if (s.length() == 1)
         {
             return 1;           
         }
 
-		int longestSub = 0;
-		int start = 0;
-		int i = 0;
+	int longestSub = 0;
+	int start = 0;
+	int i = 0;
 
         while (i < s.length())
+	{
+		bool repeating = false;
+		int j = start;
+
+		for (j = start; j < i; j++)
 		{
-			bool repeating = false;
-		    int j = start;
-
-			for (j = start; j < i; j++)
+			if (s[j] == s[i])
 			{
-				if (s[j] == s[i])
-				{
-					repeating = true;
-					break;
-				}
+				repeating = true;
+				break;
 			}
+		}
 
-			if (!repeating)
-			{
-				i++;
-			}
-			else
-			{
-				if(longestSub < i - start)
+		if (!repeating)
+		{
+			i++;
+		}
+		else
+		{
+			if(longestSub < i - start)
                 {
                     longestSub = i - start;
                 }
                 
-				start = j + 1;
-			}
+			start = j + 1;
 		}
+		
+	}
 
-		if(longestSub < i - start)
+	if(longestSub < i - start)
         {
             longestSub = i - start;
         }
                 
-		return longestSub;
+	return longestSub;
     }
 };
