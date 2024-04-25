@@ -1,0 +1,6 @@
+CC = gcc
+CFLAGS = -Wall -O2
+LIBS = -lGL -lGLU -lglut -lm
+
+raycaster: raycaster.c
+	$(CC) $(CFLAGS) raycaster.c -o raycaster $(LIBS)
