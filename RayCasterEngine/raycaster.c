@@ -3,29 +3,46 @@
 #include <GL/glut.h>
 #include <math.h>
 
-float player_x_val, player_y_val, pdx, pdy, player_angle; // player positions to rotate player (deltax, deltay, angle)
+float player_x_val, player_y_val, player_delta_x, player_delta_y, player_angle; // player positions to rotate player (deltax, deltay, angle)
 
 #define mapX  8      //map width
 #define mapY  8      //map height
 #define mapS 64      //map cube size
-#define PI 3.141592653589793238462643383279502884197
+#define PI 3.14159265
 #define P2 PI/2       // pie over 2
 #define P3 3*PI/2    // 3/2pie
+#define DR 0.0174533 // one degree in radians
 
+
+typedef struct
+{
+    int w, a, d, s;
+
+}ButtonKeys;
+
+ButtonKeys Keys;
 
 double roundToNearest64th(double value) {
     return round(value * 64) / 64;
 }
 
-float degToRad(int a) { return a*PI/180.0;}
 
 // Function returns distance between player and array endpoint (aka hypot)
 float dist(float ax,float ay, float bx, float by,float ang)
 { 
-    return cos(degToRad(ang))*(bx-ax)-sin(degToRad(ang))*(by-ay);
-    
+    return (sqrt((bx-ax)*(bx-ax) + (by-ay)*(by-ay)));
 }
 
+float degToRad(float a) { return a*PI/180.0;}
+
+float FixAng(float a) {
+    if (a < 0) a += 2*PI;
+    if (a >= 2*PI) a -= 2*PI;
+    return a;
+}
+
+
+//-----------------------------PLAYER----------------------------------------------
 
 void drawPlayer2D()
 {
@@ -35,10 +52,10 @@ void drawPlayer2D()
     glVertex2i(player_x_val,player_y_val);  // Specify the position of the point, which represents the player's position.
     glEnd();            // End drawing.
 
-    glLineWidth(3);
+    glLineWidth(4);
     glBegin(GL_LINES); 
     glVertex2i(player_x_val,player_y_val);
-    glVertex2i(player_x_val+pdx*5,player_y_val+pdy*5); 
+    glVertex2i(player_x_val+player_delta_x*5,player_y_val+player_delta_y*5); 
     glEnd();
 }
 
@@ -96,12 +113,24 @@ void drawRays2D()
     float ray_y_val = 0.0;
     float x_offset = 0.0;
     float y_offset= 0.0;
+    float final_distance = 0.0;
     
-    float ray_angle = player_angle; // set ray angle to players angle
 
-    for(r=0;r<1;r++) // cast ray
+    float ray_angle = player_angle - DR * 30;  // set ray angle to players angle
+
+    if(ray_angle < 0)
+    {
+        ray_angle+=2*PI;
+    }
+    else if (ray_angle > 2*PI)
+    {
+        ray_angle-=2*PI;
+    }
+
+    for(r=0;r<60;r++) // cast ray
     {
         //---Check Horizontal Lines--- 
+        ray_angle = ray_angle;
         depth_of_field=0;
         float distanceHorizontal = 1000000; // we want shortest distance so mak defualt very high
         float horizontal_x = player_x_val;
@@ -158,14 +187,6 @@ void drawRays2D()
                 ray_y_val += y_offset; 
                 depth_of_field+=1;
             }
-
-            glColor3f(0,1,0);
-            glLineWidth(10);
-            glBegin(GL_LINES);
-            glVertex2i(player_x_val, player_y_val);
-            glVertex2i(ray_x_val, ray_y_val);
-            glEnd();
-
 
         }
 
@@ -228,29 +249,127 @@ void drawRays2D()
                 depth_of_field+=1;
             }
             
-            // draw array
-            glColor3f(1,0,0);
-            glLineWidth(2);
-            glBegin(GL_LINES);
-            glVertex2i(player_x_val, player_y_val);
-            glVertex2i(ray_x_val, ray_y_val);
-            glEnd();
-
         }
 
+        if(distanceHorizontal < distanceVertical)
+        {
+            ray_x_val = horizontal_x;
+            ray_y_val = horizontal_y;
+            final_distance = distanceHorizontal;
+            glColor3f(0.8,0,0); // horizontal wall color
+        }else
+        {
+            ray_x_val = vertical_x;
+            ray_y_val = vertical_y;
+            final_distance = distanceVertical;
+            glColor3f(0.6,0,0); // vertical wall color
+        }
+
+        glLineWidth(3);
+        glBegin(GL_LINES);
+        glVertex2i(player_x_val, player_y_val);
+        glVertex2i(ray_x_val, ray_y_val);
+        glEnd();
+    
+        // --- Draw 3D Walls --- //
+ 
+        // fix fish eye effect, ( further rays need to be equal to center rays instead of longer )
+        float angle_diff = player_angle - ray_angle; 
+        if (angle_diff < 0)
+        {
+            angle_diff+=2*PI;
+        }
+        
+        if (angle_diff > 2*PI)
+        {
+            angle_diff-=2*PI;
+        }
+
+        final_distance = final_distance*cos(angle_diff);
+
+        // window is 320X160px so ( cube size * screen hieght/final ray distance)
+        // so the further away the smaller the wall height
+        float line_height = (mapS*320)/final_distance;
+        float line_offset = 160 - line_height/2;
+
+
+        if(line_height > 320)
+        {
+            line_height = 320;
+        }
+        // draw line every 8th pixel
+        glLineWidth(8); 
+        glBegin(GL_LINES);
+        glVertex2i(r*8+530, line_offset);
+        glVertex2i(r*8+530, line_height+line_offset);
+        glEnd();
+
+        ray_angle += DR;
+
+        if(ray_angle < 0)
+        {
+            ray_angle+=2*PI;
+        }
+        else if (ray_angle > 2*PI)
+        {
+            ray_angle-=2*PI;
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 
+float frame1, frame2, fps;
 
 void display()
-{   
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the color buffer and depth buffer.
-    drawMap2D(); // call before drawing player
-    drawPlayer2D();  // Call the function to draw the player as a point on the screen.
-    drawRays2D();
-    glutSwapBuffers();  // Swap the front and back buffers to update the displayed image.
+{  
+     
+ frame2 = glutGet(GLUT_ELAPSED_TIME);
+    if (frame1 == 0) {
+        frame1 = frame2; // Ensure initial frame time is set
+        return; // Skip the first frame to avoid uninitialized fps
+    }
+
+    float frameTime = (frame2 - frame1) / 1000.0; // Calculate frame time in seconds
+
+    // Define rotation and movement speeds
+    float rotationSpeed = 1.57; // Radians per second (about 90 degrees per second)
+    float movementSpeed = 200.0; // Units per second (adjust this value based on your game scale)
+
+    // Update player angle and position based on input
+    if(Keys.d == 1)
+    {
+        player_angle += rotationSpeed * frameTime; // Update angle based on time, not frames
+        player_angle = FixAng(player_angle);
+    }
+    if(Keys.a == 1)
+    {
+        player_angle -= rotationSpeed * frameTime; // Update angle based on time, not frames
+        player_angle = FixAng(player_angle);
+    }
+
+    // Update deltas only after adjusting angle
+    player_delta_x = cos(player_angle); // gives the x-coordinate of a point on the unit circle.
+    player_delta_y = sin(player_angle); // gives the y-coordinate of a point on the unit circle.
+
+    if(Keys.w == 1)
+    {
+        player_x_val += player_delta_x * movementSpeed * frameTime;
+        player_y_val += player_delta_y * movementSpeed * frameTime;
+    }
+    if(Keys.s == 1)
+    {
+        player_x_val -= player_delta_x * movementSpeed * frameTime;
+        player_y_val -= player_delta_y * movementSpeed * frameTime;
+    }
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the color buffer and depth buffer
+    drawMap2D(); // Draw the map
+    drawRays2D(); // Perform raycasting
+    drawPlayer2D(); // Draw the player on the screen
+    glutSwapBuffers(); // Swap buffers to display the current frame
+
+    frame1 = frame2; // Update frame1 at the end of the display call
 }
 
 void init()
@@ -260,47 +379,35 @@ void init()
     // Initialize player's position to the center of the window (approximately).
     player_x_val=300; 
     player_y_val=300;   
-    pdx=cos(player_angle)*5; 
-    pdy=sin(player_angle)*5;          
+    player_angle = 0; // Initialize player angle to 0 radians.
+    player_delta_x = player_angle;
+    player_delta_y = player_angle;    
 }
 
-void buttons(unsigned char key, int x, int y)
+
+void resize()
 {
-    // sin and cos will use radian values 0 - 6.28
-    if(key=='a')
-    {
-        player_angle-=0.1; // subtract small amount from players angle
-        if (player_angle < 0 ) // if we go less than zero reset to 2 PI
-        {
-            player_angle+=2*PI;
-        }
-        // multp by 5 bc value by cos and sin very small
-        pdx = cos(player_angle)*5;
-        pdy = sin(player_angle)*5;
-    } 
-    if(key=='d')
-    {
-        player_angle+=0.1; 
-        if (player_angle > 2*PI ) 
-        {
-            player_angle-=2*PI;
-        }
-        pdx = cos(player_angle)*5;
-        pdy = sin(player_angle)*5;
-    } 
-    if(key=='w')
-    { 
-        player_x_val += pdx; 
-        player_y_val += pdy;
-    }
-    if(key=='s')
-    { 
-        player_x_val -= pdx; 
-        player_y_val -= pdy;
-    }
-
-    glutPostRedisplay();
+    glutReshapeWindow(1024,512);
 }
+
+void ButtonDown(unsigned char key,int x,int y) 
+{                                 
+ if(key=='a'){ Keys.a=1;} 	
+ if(key=='d'){ Keys.d=1;} 
+ if(key=='w'){ Keys.w=1;}
+ if(key=='s'){ Keys.s=1;}
+ glutPostRedisplay();
+}
+
+void ButtonUp(unsigned char key,int x,int y)                               
+{
+ if(key=='a'){ Keys.a=0;} 	
+ if(key=='d'){ Keys.d=0;} 
+ if(key=='w'){ Keys.w=0;}
+ if(key=='s'){ Keys.s=0;}
+ glutPostRedisplay();
+}
+
 
 
 int main(int argc, char* argv[])
@@ -308,9 +415,12 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);                        // Initialize GLUT library.
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);  // Set the initial display mode. Double buffered and RGB color.
     glutInitWindowSize(1024,510);                 // Set the initial window size to 1024x510 pixels.
+    glutInitWindowPosition(200,200);
     glutCreateWindow("RayCaster Engine");         // Create a window with the title "RayCaster Engine".
     init();                                       // Call the initialization function to setup OpenGL state.
     glutDisplayFunc(display);                     // Register the display function that gets called every time the window needs to be updated.
-    glutKeyboardFunc(buttons);
+    glutReshapeFunc(resize);       
+    glutKeyboardFunc(ButtonDown); // button pressed
+    glutKeyboardUpFunc(ButtonUp); //button not pressed
     glutMainLoop();                               // Enter the GLUT event processing loop. This will keep the application active until it's closed.
 }
