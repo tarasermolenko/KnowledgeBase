@@ -7,7 +7,7 @@ use trigonometric operations to find the next x or y coordinate where the ray in
 updating incrementally in a loop until it hits a wall or reaches the depth of field limit.
 
 
-![alt text](raycastdemp.png "demoimage")
+!["demoimage"](raycastdemp.png)
 
 To compile:
 gcc -Wall -O2 raycaster.c -o raycaster -lGL -lGLU -lglut -lm
