@@ -1,6 +1,6 @@
 
 
-# AIR QUALITY INDEX PROGRAM
+# AIR QUALITY INDEX
 
 ## Summary
 Python command line program to calculate average of air pollutant PM2.5 over n minutes, of
