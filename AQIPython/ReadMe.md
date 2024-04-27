@@ -4,7 +4,7 @@ Python command line program to calculate average of air pollutant PM2.5 over n m
 all the stations map bound by two pairs of latitudes and longitudes.
 Input
 
-Get Tokem Here: https://aqicn.org/data-platform/token/
+Get Token Here: https://aqicn.org/data-platform/token/
 
 # The command line program takes:
 • coordinates that would represent a map bound: latitude_1, longitude_1,
