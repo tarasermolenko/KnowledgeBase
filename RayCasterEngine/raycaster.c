@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <GL/glut.h>
 #include <math.h>
+#include "Textures/spacewall1.ppm"
+
 
 float player_x_val, player_y_val, player_delta_x, player_delta_y, player_angle; // player positions to rotate player (deltax, deltay, angle)
 
@@ -12,86 +14,6 @@ float player_x_val, player_y_val, player_delta_x, player_delta_y, player_angle; 
 #define P2 PI / 2     // pie over 2
 #define P3 3 * PI / 2 // 3/2pie
 #define DR 0.0174533  // one degree in radians
-
-
-int Textures[]=               //all 32x32 textures
-{
-//Door
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,  
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,  
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,    
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,    
- 0,0,0,1,1,1,1,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,1,1,1,1,0,0,0,  
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,  
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,   
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,     
-
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,  
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,    
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,    
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,   
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,  
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,  
- 0,0,0,1,0,0,0,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0,  
- 0,0,0,1,1,1,1,1, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 1,1,1,1,1,0,0,0,  
-
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,1,0,1, 1,0,1,0,0,0,0,0, 0,0,0,0,0,0,0,0,  
- 0,0,0,0,0,0,0,0, 0,0,1,1,1,1,0,1, 1,0,1,1,1,1,0,0, 0,0,0,0,0,0,0,0,   
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,    
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,    
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,  
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,  
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,   
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 
- 
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,  
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,     
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,   
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,   
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,   
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,  
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1, 1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,   
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 
-
- //Brick
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,0,
- 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,
-
-     
-};
 
 
 typedef struct
@@ -166,41 +88,13 @@ int mapFloors[]=          //floors
  0,0,0,0,0,0,0,0,	
 };
 
-void drawMap2D()
-{
-    int x, y, x_offset, yo;
-    for (y = 0; y < mapY; y++)
-    {
-        for (x = 0; x < mapX; x++)
-        {
-            if (mapWalls[y * mapX + x] > 0)
-            {
-                glColor3f(1, 1, 1); // color of walls
-            }
-            else
-            {
-                glColor3f(0, 0, 0); // color of empy spaces
-            }
 
-            x_offset = x * mapS;
-            yo = y * mapS;
-            glBegin(GL_QUADS);
-            // add / subtract 1 pixel to outline cubes
-            glVertex2i(0 + x_offset + 1, 0 + yo + 1);
-            glVertex2i(0 + x_offset + 1, mapS + yo - 1);
-            glVertex2i(mapS + x_offset - 1, mapS + yo - 1);
-            glVertex2i(mapS + x_offset - 1, 0 + yo + 1);
-            glEnd();
-        }
-    }
-}
 //-----------------------------MAP----------------------------------------------
 
 //-----------------------------RAYS----------------------------------------------
 
-void drawRays2D()
+void drawRays()
 {
-    
     int vmtn = 0; // vertical map texture number
     int hmtn = 0; // horizontal map texture number
 
@@ -211,7 +105,7 @@ void drawRays2D()
     float y_offset = 0.0;
     float final_distance = 0.0;
 
-    float ray_angle = player_angle - DR * 30; // set ray angle to players angle
+    float ray_angle = player_angle - degToRad(30);// set ray angle to players angle
 
     if (ray_angle < 0)
     {
@@ -222,7 +116,7 @@ void drawRays2D()
         ray_angle -= 2 * PI;
     }
 
-    for (r = 0; r < 60; r++) // cast ray
+    for (r = 0; r < 120; r++) // cast ray
     {
         //---Check Horizontal Lines---
         ray_angle = ray_angle;
@@ -339,11 +233,9 @@ void drawRays2D()
         }
 
         float shade = 1;
-        int texture = hmtn;
 
         if (distanceHorizontal < distanceVertical)
         {
-            texture = vmtn;
             ray_x_val = horizontal_x;
             ray_y_val = horizontal_y;
             final_distance = distanceHorizontal;
@@ -355,14 +247,9 @@ void drawRays2D()
             ray_y_val = vertical_y;
             final_distance = distanceVertical;
             glColor3f(0.6, 0, 0); // vertical wall color
-            shade = 0.5;
+            shade = 0.6;
         }
 
-        glLineWidth(3);
-        glBegin(GL_LINES);
-        glVertex2i(player_x_val, player_y_val);
-        glVertex2i(ray_x_val, ray_y_val);
-        glEnd();
 
         // --- Draw 3D Walls --- //
 
@@ -404,8 +291,8 @@ void drawRays2D()
         int lineOff = 160 - (lineH >> 1);
 
         int y;
-        float ty = texture_y_offset * ty_step+texture*32;
-        // value of 0-32 we can look up in texture
+        float ty = texture_y_offset * ty_step;
+
 
         float tx = 0.0;
 
@@ -434,46 +321,59 @@ void drawRays2D()
             }
         }
 
-        ty+= 32; // skip to next texture in array
 
         for (y = 0; y < lineH; y++)
         {
-            float c = Textures[(int)(ty) * 32 + (int)(tx)] * shade;
-            if(texture == 1) 
-            { 
-                glColor3f(c/2.0, c, c/2.0);
-            }
-            else
-            {
-                glColor3f(c*0.796 , c*0.255 , c* 0.329 );
-            }
-            glPointSize(8);
-            glBegin(GL_POINTS);
-            glVertex2i(r * 8 + 530, y + lineOff);
-            glEnd(); // draw vertical wall
+
+            int pixel=((int)ty*32+(int)tx)*3;
+            int red   = fmin(255, Texture_1[pixel+0] * shade);
+            int green = fmin(255, Texture_1[pixel+1] * shade);
+            int blue  = fmin(255, Texture_1[pixel+2] * shade);
+            glPointSize(8); 
+            glColor3ub(red,green,blue); 
+            glBegin(GL_POINTS); 
+            glVertex2i(r*8,y+lineOff); 
+            glEnd();
+
             ty += ty_step;
         }
 
 
-        // draw floors
+        // draw floors and ceiling
         for(y = lineOff+line_height; y < 320; y++)
         {
+                glColor3f(0.2,0.2,0.2);
+                glPointSize(8);
+                glBegin(GL_POINTS);
+                glVertex2i(r*8+530,y);
+                glEnd();
 
-            glColor3f(0.2,0.2,0.2);
-            glPointSize(8);
-            glBegin(GL_POINTS);
-            glVertex2i(r*8+530,y);
-            glEnd();
+
+
+            // float dy = y-(640/2.0), deg=ray_angle, raFix=cos(FixAng(player_angle-ray_angle));
+
+            // tx = player_x_val/2 + cos(deg)*158*2*32/dy/raFix;
+
+            // ty = player_y_val/2 - sin(deg)*158*2*32/dy/raFix;
+
+            // int pixel=(((int)(ty)&31)*32 + ((int)(tx)&31))*3;
+
+            // int red   = Texture_2[pixel+0]*shade;
+            // int green = Texture_2[pixel+1]*shade;
+            // int blue  = Texture_2[pixel+2]*shade;
+            // glPointSize(8); glColor3ub(red,green,blue); glBegin(GL_POINTS); glVertex2i(r*8,y); glEnd();
+
 
             // draw ceiling
             glColor3f(0.5,0.5,0.5);
             glPointSize(8);
             glBegin(GL_POINTS);
-            glVertex2i(r*8+530,320-y);
+            glVertex2i(r*8,320-y);
             glEnd();
         }
 
-        ray_angle += DR; 
+
+        ray_angle = ray_angle + DR;
 
         if (ray_angle < 0)
         {
@@ -485,6 +385,7 @@ void drawRays2D()
         }
     }
 }
+
 
 //-----------------------------------------------------------------------------
 
@@ -531,8 +432,8 @@ void display()
         player_angle = FixAng(player_angle);
     }
 
-    player_delta_x = cos(player_angle);
-    player_delta_y = sin(player_angle);
+    player_delta_x = cos(player_angle); // returns radian
+    player_delta_y = sin(player_angle); // returns radian
 
     float nextX, nextY;
     // Assuming a buffer size of 5 units to prevent clipping
@@ -559,9 +460,7 @@ void display()
         }
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    drawMap2D();
-    drawRays2D();
-    drawPlayer2D();
+    drawRays();
     glutSwapBuffers();
 
     frame1 = frame2;
@@ -570,7 +469,7 @@ void display()
 void init()
 {
     glClearColor(0.3, 0.3, 0.3, 0); // Set the clear color for the window (background color) to a grey tone.
-    gluOrtho2D(0, 1024, 510, 0);    // Define a 2D orthographic projection matrix. Coordinates for the display.
+    gluOrtho2D(0, 460, 320, 0);    // Define a 2D orthographic projection matrix. Coordinates for the display.
     // Initialize player's position to the center of the window (approximately).
     player_x_val = 300;
     player_y_val = 300;
@@ -581,7 +480,7 @@ void init()
 
 void resize()
 {
-    glutReshapeWindow(1024, 512);
+    glutReshapeWindow(460,320);
 }
 
 void ButtonDown(unsigned char key, int x, int y)
@@ -630,9 +529,8 @@ int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);                       // Initialize GLUT library.
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); // Set the initial display mode. Double buffered and RGB color.
-    glutInitWindowSize(1024, 510);               // Set the initial window size to 1024x510 pixels.
-    glutInitWindowPosition(200, 200);
-    glutCreateWindow("RayCaster Engine"); // Create a window with the title "RayCaster Engine".
+    glutInitWindowSize(460, 320);               // Set the initial window size to 1024x510 pixels.
+    glutCreateWindow("RayCaster Engine"); // Create a window with the title "RayCaster Ensgine".
     init();                               // Call the initialization function to setup OpenGL state.
     glutDisplayFunc(display);             // Register the display function that gets called every time the window needs to be updated.
     glutReshapeFunc(resize);
