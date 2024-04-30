@@ -5,8 +5,6 @@
 #include "Textures/spacewall1.ppm"
 
 
-float player_x_val, player_y_val, player_delta_x, player_delta_y, player_angle; // player positions to rotate player (deltax, deltay, angle)
-
 #define mapX 8  // map width
 #define mapY 8  // map height
 #define mapS 64 // map cube size
@@ -15,6 +13,7 @@ float player_x_val, player_y_val, player_delta_x, player_delta_y, player_angle; 
 #define P3 3 * PI / 2 // 3/2pie
 #define DR 0.0174533  // one degree in radians
 
+float player_x_val, player_y_val, player_delta_x, player_delta_y, player_angle; // player positions to rotate player (deltax, deltay, angle)
 
 typedef struct
 {
@@ -23,6 +22,7 @@ typedef struct
 } ButtonKeys;
 
 ButtonKeys Keys;
+
 
 double roundToNearest64th(double value)
 {
