@@ -1,4 +1,4 @@
-## Raycast Wolfenstein Style Render
+## Ray Casting Style Graphics Render
 
 main idea: calculating the intersections of rays with the grid (both horizontal and vertical grid lines)
 based on the properties of the map grid and the angle of each ray.
