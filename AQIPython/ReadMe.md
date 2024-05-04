@@ -18,10 +18,12 @@ latitude_2, longitude_2
 ## Data
 Using the free JSON API https://aqicn.org/json-api/doc/ to retrieve the data.
 
-Output
+### Output
 Print PM2.5 sampled value for each station.
 Print overall PM2.5 average of all stations over n minutes of sampling.
 
 Specifiying Time and Sampling Rate: `python script.py <latitude_1> <longitude_1> <latitude_2> <longitude_2> <minutes> <rate>`
 
 Sample Usage: `python script.py 49 -123 50 -124 1 5`
+
+![Sample Run Image](AQI.png "Sample RUn")
