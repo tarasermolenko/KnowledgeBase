@@ -1,4 +1,4 @@
 ### Duo Peer Chat in C
 
 
-TO DO: add encryption
+TO DO: upgrade cypher encryption to rsa
