@@ -19,6 +19,7 @@ Email: taras_ermolenko@sfu.ca
 
 // Can change message size based on what is needed
 #define MAX_MSG_LEN 300
+#define CYPHER_KEY 3
 
 int sock, ret;
 struct sockaddr_in remote_addr, local_addr;
@@ -39,6 +40,7 @@ static pthread_cond_t outgoing_cond = PTHREAD_COND_INITIALIZER;
 static pthread_cond_t incoming_cond = PTHREAD_COND_INITIALIZER;
 
 int exit_cond;
+
 
 void *receive_messages(void *arg);
 
@@ -165,6 +167,11 @@ void create_gtk_window() {
 }
 
 
+void simple_encrypt_decrypt(unsigned char *data, int data_len, unsigned char key) {
+    for (int i = 0; i < data_len; i++) {
+        data[i] ^= key;
+    }
+}
 int main(int argc, char *argv[]) {
     
     printf("prgoram starting... \n");
@@ -178,7 +185,6 @@ int main(int argc, char *argv[]) {
     int myPort = atoi(argv[1]);
     char* theirHostname = argv[2];
     char* theirPort = argv[3];
-
 
     // hardcoding a UDP socket
     sock = socket(AF_INET, SOCK_DGRAM, 0); // file descriptor for network communication
@@ -241,7 +247,7 @@ int main(int argc, char *argv[]) {
 
     
     // program ready to take input
-    printf("s-talk Program Started: \n");
+    printf("Program Started: \n");
 
     // Start the receive thread
     if (pthread_create(&receive_thread, NULL, receive_messages, NULL) != 0) {
@@ -302,6 +308,10 @@ int main(int argc, char *argv[]) {
 
 // receive thread
 void *receive_messages(void *arg) {
+
+    unsigned char decrypted_msg[MAX_MSG_LEN];
+    int decrypted_len;
+
     
     while (1) {
         
@@ -314,10 +324,14 @@ void *receive_messages(void *arg) {
             {
                 recv_buf[recv_len] = '\0';
 
+                strcpy((char*)decrypted_msg, recv_buf);
+                decrypted_len = recv_len;
+                simple_encrypt_decrypt(decrypted_msg, decrypted_len, CYPHER_KEY);
+                decrypted_msg[decrypted_len] = '\0';
 
                 char* rcvd_msg = malloc(MAX_MSG_LEN);
 
-                strcpy(rcvd_msg, recv_buf);
+                strcpy(rcvd_msg, (char*)decrypted_msg);
 
                 add_incoming_message(rcvd_msg);
 
@@ -342,15 +356,23 @@ void *receive_messages(void *arg) {
 // send thread
 void *send_messages(void *arg) {
     
+    unsigned char encrypted_msg[MAX_MSG_LEN];
+    int encrypted_len;
+
+    
     while (1) {
        
         if (outgoing_list_size() != 0)
         {
             // pop message at bottom of list and send it.
             char* outgoing_msg = remove_outgoing_message();
+            
+            strcpy((char*)encrypted_msg, outgoing_msg);
+            encrypted_len = strlen(outgoing_msg);
+            simple_encrypt_decrypt(encrypted_msg, encrypted_len, CYPHER_KEY);
 
             // Send the message to the destination
-            if (sendto(sock, outgoing_msg, strlen(outgoing_msg), 0, (struct sockaddr*) &remote_addr, sizeof(remote_addr)) < 0) {
+            if (sendto(sock, encrypted_msg, encrypted_len, 0, (struct sockaddr*) &remote_addr, sizeof(remote_addr)) < 0) {
                 perror("sendto");
             }
 
