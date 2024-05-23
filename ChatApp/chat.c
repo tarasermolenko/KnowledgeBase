@@ -172,6 +172,7 @@ void simple_encrypt_decrypt(unsigned char *data, int data_len, unsigned char key
         data[i] ^= key;
     }
 }
+
 int main(int argc, char *argv[]) {
     
     printf("prgoram starting... \n");
