@@ -6,7 +6,7 @@ make
 
 ./chat [local port number] [remote machine name] [remote port number]
 
-
+![demo_image](ChatDemoImage.png)
 
 
 ## Implementation Notes
