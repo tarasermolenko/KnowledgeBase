@@ -13,7 +13,7 @@ make
 
 ### COMPLETED:
 
-Custom list data structure
+Custom list data structure and Tests
 
 UDP connection netcode
 
