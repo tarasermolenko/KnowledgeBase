@@ -11,7 +11,7 @@ make
 
 ## Implementation Notes
 
-Completed:
+### COMPLETED:
 
 Custom list data structure
 
@@ -22,7 +22,7 @@ Concurrency Threading
 Basic GUI
 
 
-TO DO: 
+### TO DO: 
 
 upgrade cypher encryption to rsa
 
