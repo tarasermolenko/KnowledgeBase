@@ -13,7 +13,9 @@ make
 
 ### COMPLETED:
 
-Custom list data structure and Tests
+Custom list data structure
+
+Testing for data structure ensuring no memory leaks
 
 UDP connection netcode
 
