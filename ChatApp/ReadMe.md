@@ -9,8 +9,21 @@ make
 
 
 
-## Notes
+## Implementation Notes
 
-TO DO: upgrade cypher encryption to rsa
+Completed:
+
+Custom list data structure
+
+UDP connection netcode
+
+Concurrency Threading
+
+Basic GUI
+
+
+TO DO: 
+
+upgrade cypher encryption to rsa
 
 
