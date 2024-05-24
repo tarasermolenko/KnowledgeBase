@@ -1,6 +1,6 @@
+## Duo Peer Chat in C
 
-
-## To run:
+### To run:
 
 make
 
@@ -9,8 +9,8 @@ make
 
 
 
-### Duo Peer Chat in C
 
+#### Duo Peer Chat in C
 
 TO DO: upgrade cypher encryption to rsa
 
