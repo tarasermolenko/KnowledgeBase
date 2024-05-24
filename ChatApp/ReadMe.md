@@ -2,9 +2,9 @@
 
 ### To run:
 
-make
+`make`
 
-./chat [local port number] [remote machine name] [remote port number]
+`./chat [local port number] [remote machine name] [remote port number]`
 
 ![demo_image](ChatDemoImage.png)
 
