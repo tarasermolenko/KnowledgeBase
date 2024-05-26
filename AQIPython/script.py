@@ -84,7 +84,7 @@ def main(latitude1, longitude1, latitude2, longitude2, sample_period, sample_rat
     pm25_dict = {}  # Initialize pm25_dict outside the loop to accumulate data
     total_samples = sample_period * sample_rate  # Calculate the total number of samples to be taken
 
-    for _ in range(total_samples):
+    for x in range(total_samples):
         # Fetch PM2.5 data in parallel and update pm25_dict with new data
         new_data = station_sample(uid_list)  
         for station, values in new_data.items():
@@ -93,7 +93,7 @@ def main(latitude1, longitude1, latitude2, longitude2, sample_period, sample_rat
             else:
                 pm25_dict[station] = values  # Initialize list with new values for the station
 
-        if _ < total_samples - 1:  # Avoid sleeping after the last sample
+        if x < total_samples - 1:  # Avoid sleeping after the last sample
             time.sleep(60 / sample_rate)  # Sleep to achieve the desired sample rate per minute
 
     # After all data collection, print sampled values for each station
