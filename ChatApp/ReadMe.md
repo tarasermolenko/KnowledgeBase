@@ -1,7 +1,9 @@
 ## Duo Peer Chat in C
 
 This is a messenger application that handles a connection between 2 clients 
+
 Utilizing Sockets for networking, Threads for concurrency, and Gtk library for GUI 
+
 Implemented linked list data structure for message queueing
 
 ### To run:
