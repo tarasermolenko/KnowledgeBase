@@ -3,9 +3,12 @@
 # AIR QUALITY INDEX
 
 ## Summary
-Python command line program to calculate average of air pollutant PM2.5 over n minutes, of
+
+Real time air quality data within specified geographic boundaries.              
+
+The command line program calculates average of air pollutant PM2.5 over n minutes, of
 all the stations map bound by two pairs of latitudes and longitudes.
-Input
+
 
 Get Token Here: https://aqicn.org/data-platform/token/
 
